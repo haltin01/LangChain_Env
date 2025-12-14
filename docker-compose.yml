@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    env_file:
+      - .env
+    command: python3 smoke_test.py
+    # Expose nothing by default — for CLI tests only
+
+  tests:
+    build: .
+    env_file:
+      - .env
+    command: pytest -q
+    # Keep it ephemeral

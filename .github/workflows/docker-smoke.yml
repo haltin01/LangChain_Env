@@ -1,0 +1,33 @@
+name: Docker smoke & tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t langchain-env:latest .
+
+      - name: Run smoke test (requires OPENAI_API_KEY secret)
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "Skipping online smoke test because OPENAI_API_KEY is not set";
+          else
+            docker run --rm -e OPENAI_API_KEY="$OPENAI_API_KEY" langchain-env:latest python3 smoke_test.py;
+          fi
+
+      - name: Run tests (pytest)
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          docker run --rm -e OPENAI_API_KEY="$OPENAI_API_KEY" langchain-env:latest pytest -q

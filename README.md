@@ -29,6 +29,36 @@ export OPENAI_API_KEY="sk-..."
 python3 smoke_test.py
 ```
 
+## Docker
+
+You can run the project in Docker (recommended if you don't want to create a local venv).
+
+Build the image:
+
+```bash
+docker build -t langchain-env:latest .
+```
+
+Run the smoke test with your local `.env` (keeps your key out of the image and git):
+
+```bash
+docker run --rm --env-file .env langchain-env:latest python3 smoke_test.py
+```
+
+Run pytest inside Docker:
+
+```bash
+docker run --rm --env-file .env langchain-env:latest pytest -q
+```
+
+Or use docker-compose:
+
+```bash
+docker compose up --build app
+# run tests
+docker compose run --rm tests
+```
+
 This script first tries to use `LangChain` and falls back to the `openai` SDK if needed. The smoke test expects the model to respond with the exact phrase `smoke test OK`.
 
 ## Tests
