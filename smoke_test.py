@@ -11,6 +11,44 @@ load_dotenv()
 PROMPT = "Say exactly: smoke test OK"
 
 
+def get_langchain_llm():
+    """Try multiple LangChain import paths and return (llm_instance, HumanMessageClass, description).
+
+    Returns (None, None, None) when no suitable LangChain LLM can be found/instantiated.
+    """
+    try_imports = [
+        ("langchain.chat_models", "ChatOpenAI"),
+        ("langchain.chat_models.openai", "ChatOpenAI"),
+        ("langchain.llms", "OpenAI"),
+    ]
+
+    for module_name, cls_name in try_imports:
+        try:
+            module = __import__(module_name, fromlist=[cls_name])
+            cls = getattr(module, cls_name)
+            # instantiate with chat-like params where possible
+            try:
+                llm = cls(temperature=0, model_name="gpt-3.5-turbo")
+            except TypeError:
+                try:
+                    llm = cls(temperature=0)
+                except Exception:
+                    llm = cls()
+
+            try:
+                from langchain.schema import HumanMessage
+
+                human_message_cls = HumanMessage
+            except Exception:
+                human_message_cls = None
+
+            return llm, human_message_cls, f"{module_name}.{cls_name}"
+        except Exception:
+            continue
+
+    return None, None, None
+
+
 def run_test():
     key = os.environ.get("OPENAI_API_KEY")
     if not key:
