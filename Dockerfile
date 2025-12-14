@@ -16,5 +16,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project files
 COPY . /app
 
-# Default command: run the smoke test
+# Copy entrypoint and ensure it's executable
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Default entrypoint validates env and runs the command
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["python3", "smoke_test.py"]
