@@ -59,6 +59,24 @@ docker compose up --build app
 docker compose run --rm tests
 ```
 
+## One-line setup (clone + bootstrap)
+
+To clone this repository to a machine and re-establish the environment in one command (recommended):
+
+```bash
+git clone https://github.com/haltin01/LangChain_Env.git && cd LangChain_Env && ./bootstrap.sh
+```
+
+If you want the app to keep running in the background after the bootstrap, pass `--start`:
+
+```bash
+git clone https://github.com/haltin01/LangChain_Env.git && cd LangChain_Env && ./bootstrap.sh --start
+```
+
+Notes:
+- The script will run `pytest` inside Docker and, if a `.env` file with `OPENAI_API_KEY` exists, will run the smoke test that hits the OpenAI API.
+- The `.env` file is intentionally ignored by git. Add your `OPENAI_API_KEY` to `.env` before running the smoke test.
+
 This script first tries to use `LangChain` and falls back to the `openai` SDK if needed. The smoke test expects the model to respond with the exact phrase `smoke test OK`.
 
 ## Tests
