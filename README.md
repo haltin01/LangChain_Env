@@ -77,6 +77,14 @@ Notes:
 - The script will run `pytest` inside Docker and, if a `.env` file with `OPENAI_API_KEY` exists, will run the smoke test that hits the OpenAI API.
 - The `.env` file is intentionally ignored by git. Add your `OPENAI_API_KEY` to `.env` before running the smoke test.
 
+## Notes & compatibility ⚠️
+
+- LangChain API surface and import paths can change between releases. To make the smoke test robust across different installed `langchain` versions, the script tries multiple known import locations (for example `langchain.chat_models.ChatOpenAI` and `langchain.chat_models.openai.ChatOpenAI`) and falls back to the OpenAI SDK if no suitable LangChain class is found. This prevents failures when a different LangChain release is present on a machine.
+
+- If you prefer strict reproducibility instead of flexible compatibility, pin `langchain` to a specific version in `requirements.txt` (for example: `langchain==1.1.3`). Pinning simplifies behavior but reduces flexibility when upgrading.
+
+- Modern `docker compose` ignores the top-level `version:` key in compose files and will emit an informational warning if it is present. We removed it from `docker-compose.yml` to avoid that noise; it had no functional effect.
+
 This script first tries to use `LangChain` and falls back to the `openai` SDK if needed. The smoke test expects the model to respond with the exact phrase `smoke test OK`.
 
 ## Tests
