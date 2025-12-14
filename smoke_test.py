@@ -4,6 +4,9 @@ It requires OPENAI_API_KEY to be set in the environment.
 """
 import os
 import sys
+from dotenv import load_dotenv
+
+load_dotenv()
 
 PROMPT = "Say exactly: smoke test OK"
 
