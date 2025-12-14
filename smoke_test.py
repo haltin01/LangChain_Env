@@ -50,7 +50,7 @@ def run_test():
             print("OpenAI SDK failed:", e2)
             raise
 
-    if "smoke test OK" in text.lower():
+    if "smoke test ok" in text.lower():
         print("SMOKE TEST OK ✅")
         return 0
     else:
