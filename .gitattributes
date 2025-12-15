@@ -1,0 +1,8 @@
+# Ensure shell scripts and Dockerfile use LF line endings to avoid CRLF issues on Windows
+*.sh text eol=lf
+Dockerfile text eol=lf
+docker-compose.yml text eol=lf
+*.yml text eol=lf
+
+# PowerShell scripts use CRLF on Windows for best editor experience
+*.ps1 text eol=crlf
